@@ -1,0 +1,15 @@
+[Unit]
+#Description = csplugin cpp javahttpproxy db service up
+After = default.target
+[Service]
+Type=simple
+ExecStart = /etc/init.d/cspluginjavahttpproxydbcppservice start
+ExecStop  = /etc/init.d/cspluginjavahttpproxydbcppservice stop
+#ExecStart = /opt/scripts/test.sh start
+#ExecStop  = /opt/scripts/test.sh stop
+
+RemainAfterExit = yes
+
+[Install]
+WantedBy = multi-user.target
+

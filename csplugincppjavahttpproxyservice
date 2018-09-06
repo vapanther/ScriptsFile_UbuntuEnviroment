@@ -1,0 +1,133 @@
+#!/bin/sh
+ENVIRONMENT=prod
+SERVICE_NAME=csplugincppjavahttpproxyservice
+DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+PATH_TO_JAR=$DIR/csp-main-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+PID_PATH_NAME=/tmp/csplugincppjavahttpproxyservice-pid
+PID_PATH_HTTPPROXY=/csplugin/cspluginhttpproxy.pid
+PID_PATH_CPP=/csplugin/csplugincpp.pid
+PID_PATH_JAVA=/csplugin/cspluginjava.pid
+
+CONFIG_PATH=/config
+now="$(date +'%d_%m_%Y_%H_%M_%S')"
+filename="backup_$now"
+
+
+case $1 in
+    start)
+        echo "Starting $SERVICE_NAME ..."
+        if [ ! -f $PID_PATH_NAME ]; then
+            nohup java -jar $PATH_TO_JAR -modules httpproxy java cpp -env $ENVIRONMENT /tmp 2>> /dev/null >> /dev/null &
+                        echo $! > $PID_PATH_NAME
+            echo "$SERVICE_NAME started ..."
+        else
+            echo "$SERVICE_NAME is already running ..."
+        fi
+    ;
+    stop)
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            PIDHTTPPROXY=$(cat $PID_PATH_HTTPPROXY);
+            PIDCPP=$(cat $PID_PATH_CPP);
+			PIDJAVA=$(cat $PID_PATH_JAVA);
+			
+            echo "$SERVICE_NAME stoping ..."
+
+            if [ -z != "$PID" ]
+            then
+             kill $PID /tmp 2>> /dev/null >> /dev/null &
+            fi
+            if [ -z != "$PIDHTTPPROXY" ]
+            then
+              kill $PIDHTTPPROXY /tmp 2>> /dev/null >> /dev/null &
+            fi
+            if [ -z != "$PIDCPP" ]
+            then
+             kill $PIDCPP /tmp 2>> /dev/null >> /dev/null &
+            fi
+			if [ -z != "$PIDJAVA" ]
+            then
+             kill $PIDJAVA /tmp 2>> /dev/null >> /dev/null &
+            fi
+
+            echo "$SERVICE_NAME stopped ..."
+            rm $PID_PATH_NAME
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+    ;
+    status)
+            if [ -f $PID_PATH_NAME ]; then
+              echo "$SERVICE_NAME is running ..."
+            else
+                echo "$SERVICE_NAME is stopped ..."
+            fi
+        ;
+    restart)
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            PIDHTTPPROXY=$(cat $PID_PATH_HTTPPROXY);
+            PIDCPP=$(cat $PID_PATH_CPP);
+			PIDJAVA=$(cat $PID_PATH_JAVA);
+            echo "$SERVICE_NAME stopping ...";
+
+            if [ -z != "$PID" ]
+            then
+             kill $PID /tmp 2>> /dev/null >> /dev/null &
+            fi
+            if [ -z != "$PIDHTTPPROXY" ]
+            then
+              kill $PIDHTTPPROXY /tmp 2>> /dev/null >> /dev/null &
+            fi
+            if [ -z != "$PIDCPP" ]
+            then
+             kill $PIDCPP /tmp 2>> /dev/null >> /dev/null &
+            fi
+			if [ -z != "$PIDJAVA" ]
+            then
+             kill $PIDJAVA /tmp 2>> /dev/null >> /dev/null &
+            fi
+
+            echo "$SERVICE_NAME stopped ...";
+            rm $PID_PATH_NAME
+            echo "$SERVICE_NAME starting ..."
+            nohup java -jar $PATH_TO_JAR -modules httpproxy java cpp -env $ENVIRONMENT /tmp 2>> /dev/null >> /dev/null &
+                        echo $! > $PID_PATH_NAME
+            echo "$SERVICE_NAME started ..."
+        else
+            echo "$SERVICE_NAME is not running ..."
+        fi
+    ;
+     uninstall)
+        if [ -f $PID_PATH_NAME ]; then
+            PID=$(cat $PID_PATH_NAME);
+            PIDHTTPPROXY=$(cat $PID_PATH_HTTPPROXY);
+            PIDCPP=$(cat $PID_PATH_CPP);
+			PIDJAVA=$(cat $PID_PATH_JAVA);
+            echo "$SERVICE_NAME stopping ...";
+            if [ -z != "$PID" ]
+            then
+             kill $PID /tmp 2>> /dev/null >> /dev/null &
+            fi
+            if [ -z != "$PIDHTTPPROXY" ]
+            then
+              kill $PIDHTTPPROXY /tmp 2>> /dev/null >> /dev/null &
+            fi
+            if [ -z != "$PIDCPP" ]
+            then
+             kill $PIDCPP /tmp 2>> /dev/null >> /dev/null &
+            fi
+			if [ -z != "$PIDJAVA" ]
+            then
+             kill $PIDJAVA /tmp 2>> /dev/null >> /dev/null &
+            fi
+            echo "$SERVICE_NAME stopped ...";
+            rm $PID_PATH_NAME
+        fi
+        echo "Removing $SERVICE_NAME ...";
+        sudo rm -rf /csplugin
+        sudo rm -rf /etc/init.d/cspluginjavacpphttpproxyservice
+        sudo rm -rf /etc/init.d/csp-main-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+        echo "$SERVICE_NAME has been successfully uninstalled ...";
+    ;
+esac
